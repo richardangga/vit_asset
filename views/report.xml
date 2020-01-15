@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <menuitem name="Assets" action="om_account_asset.action_asset_asset_report"
+          id="menu_action_asset_asset_report2"
+          parent="submenu_report" sequence="20"/>
+
+    </data>
+</openerp>

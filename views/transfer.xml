@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_vit_transfer_tree" model="ir.ui.view">
+            <field name="name">vit.transfer.tree</field>
+            <field name="model">vit.transfer</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="Transfer">
+                    <field name="name" />
+                    <field name="date" />
+                    <field name="notes" />
+                    <field name="company_src_id" />
+                    <field name="company_dest_id" />
+                    <field name="location_id" />
+                    <field name="location_dest_id" />
+                    <field name="user_id" options="{'no_create':True}"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_vit_transfer_form" model="ir.ui.view">
+            <field name="name">vit.transfer.form</field>
+            <field name="model">vit.transfer</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Transfer" version="7.0">
+                    <header>
+                        <button string="Confirm" icon="fa-check-circle" states="draft" type="object" name="action_open"/>
+                        <button string="Approve" groups="vit_asset.group_confirm_asset_accounting" icon="fa-check-circle" states="open" type="object" name="action_approve"/>
+                        <button string="Reject" groups="vit_asset.group_confirm_asset_accounting" icon="fa-times" states="open" type="object" name="action_cancel"/>
+                        <button string="View Entries" groups="vit_asset.group_confirm_asset_accounting" icon="fa-navicon" attrs="{'invisible': ['|',('state','!=','done'),('is_interco','=','False')]}" type="object" name="action_view_entries"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+
+                    <sheet>
+
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Name" />
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="date"/>
+                            <field name="user_id" options="{'no_create':True}"/>
+                            <field name="company_src_id" options="{'no_create':True}"/>
+                            <field name="company_dest_id" options="{'no_create':True}"/>
+                            <field name="location_id" options="{'no_create':True}" domain="[('company_id','=',company_src_id),('id','!=',location_dest_id)]"/>
+                            <field name="location_dest_id" options="{'no_create':True}" domain="[('company_id','=',company_dest_id),('id','!=',location_id)]"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="ga_id" options="{'no_create':True}"/>
+                            <field name="is_interco" invisible="1"/>
+                        </group>
+
+                        <notebook colspan="4">
+                            <page string="Asset to Transfer">
+                                <field name="asset_line">
+                                    <tree string="Asset Details" editable="bottom">
+                                        <field name="asset_id" domain="[('asset_id','!=', False),('state','in',['confirm','open']),('last_location_id','=',location_id)]" options="{'no_create':True}"/>
+                                        <field name="category_id" domain="[('company_id','=',company_dest_id)]" options="{'no_create':True}" attrs="{'readonly': [('is_interco','=',False)], 'required': [('is_interco','!=',False)]}"/>
+                                        <field name="is_interco" invisible="0"/>
+                                        <field name="location_id" invisible="0"/>
+                                        <field name="company_dest_id" invisible="0"/>
+                                        <field name="description"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Notes">
+                                <field name="notes" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_vit_transfer_search" model="ir.ui.view">
+            <field name="name">vit.transfer.search</field>
+            <field name="model">vit.transfer</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="Transfer">
+                    <field name="name" select="True"/>
+                    <field name="date" select="True"/>
+                    <field name="notes" select="True"/>
+                    <field name="location_id" select="True"/>
+                    <field name="location_dest_id" select="True"/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="Location" icon="terp-camera_test" name="group_by_location_id" context="{'group_by':'location_id'}"/>
+                        <filter string="Destination Location" icon="terp-camera_test" name="group_by_location_dest_id" context="{'group_by':'location_dest_id'}"/>
+                        <filter string="State" icon="terp-camera_test" name="group_by_state" context="{'group_by':'state'}"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_vit_transfer_view">
+            <field name="name">Transfer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vit.transfer</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_vit_transfer_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_vit_transfer_view_form">
+            <field name="act_window_id" ref="act_open_vit_transfer_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_vit_transfer_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_vit_transfer_view_tree">
+            <field name="act_window_id" ref="act_open_vit_transfer_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_vit_transfer_tree"/>
+        </record>
+
+        <menuitem id="menu_vit_transfer"
+                  parent="submenu_operation"
+                  sequence="30"
+                  action="act_open_vit_transfer_view"/>
+    
+    </data>
+</openerp>

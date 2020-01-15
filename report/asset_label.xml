@@ -1,0 +1,53 @@
+<odoo>
+    <data>
+
+        <template id="asset_label_document">
+            <div class="page">
+
+                <table style="width:50mm;">
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid black;" class="text-center">
+                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', o.code, 200, 200)"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black;" class="text-center">
+                                <span t-esc="o.code"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black;" class="text-center">
+                                <span t-esc="o.name"/> - <span t-esc="o.date"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black;" class="text-center">
+                                <span t-esc="o.company_id.name"/> - <span t-esc="o.category_id.name"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </template>
+
+        <template id="asset_label">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="vit_asset.asset_label_document"/>
+                </t>
+            </t>
+        </template>
+
+        <report 
+            string="Asset Label" 
+            id="vit_action_report_asset_asset" 
+            model="account.asset.asset" 
+            report_type="qweb-pdf"
+            name="vit_asset.asset_label" 
+            file="vit_asset.asset_label" 
+        />
+
+    </data>
+</odoo>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_vit_physical_tree" model="ir.ui.view">
+            <field name="name">vit.physical.tree</field>
+            <field name="model">vit.physical</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="Physical Check">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="last_location_id"/>
+                    <field name="company_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_vit_physical_form" model="ir.ui.view">
+            <field name="name">vit.physical.form</field>
+            <field name="model">vit.physical</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Physical Check">
+                    <header>
+                        <button string="Confirm" icon="fa-check-circle" states="draft" type="object" name="action_open"/>
+                        <button string="Approve" icon="fa-check-circle" states="open" type="object" name="action_approve"/>
+                        <button string="Reject" icon="fa-times" states="open" type="object" name="action_cancel"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Name" />
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="last_location_id" options="{'no_create':True}"/>
+                            <field name="date"/>
+                            <field name="user_id" options="{'no_create':True}"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="company_id" options="{'no_create':True}"/>
+                            <field name="journal_id" options="{'no_create':True}"/>
+                        </group>
+
+                        <notebook colspan="4">
+                            <page string="Notes">
+                                <field name="notes" />
+                            </page>
+                            <page string="Asset Details">
+                                <field name="physical_lines">
+                                    <tree editable="bottom" create="false" delete="false">
+                                        <field name="asset_id" options="{'no_create':True}"/>
+                                        <field name="condition"/>
+                                        <field name="last_location_id" options="{'no_create':True}"/>
+                                        <field name="real_last_location_id" options="{'no_create':True}"/>
+                                        <field name="qty"/>
+                                        <field name="real_qty"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_vit_physical_search" model="ir.ui.view">
+            <field name="name">vit.physical.search</field>
+            <field name="model">vit.physical</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="Physical Check">
+                    <field name="name" select="True"/>
+                    <field name="last_location_id" select="True"/>
+                    <field name="company_id" select="True"/>
+                    <field name="date" select="True"/>
+                    <field name="state" select="True"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Location" icon="terp-camera_test" name="group_by_location" context="{'group_by':'last_location_id'}"/>
+                        <filter string="State" icon="terp-camera_test" name="group_by_state" context="{'group_by':'state'}"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_vit_physical_view">
+            <field name="name">Physical Check</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vit.physical</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_vit_physical_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_vit_physical_view_form">
+            <field name="act_window_id" ref="act_open_vit_physical_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_vit_physical_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_vit_physical_view_tree">
+            <field name="act_window_id" ref="act_open_vit_physical_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_vit_physical_tree"/>
+        </record>
+
+        <menuitem id="menu_vit_physical"
+                  parent="submenu_operation"
+                  sequence="20"
+                  action="act_open_vit_physical_view"/>
+    
+    </data>
+</openerp>

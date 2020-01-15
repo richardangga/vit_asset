@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="vit_view_asset_depreciation_confirmation_wizard" model="ir.ui.view">
+        <field name="name">vit.asset.depreciation.confirmation.wizard</field>
+        <field name="model">asset.depreciation.confirmation.wizard</field>
+        <field name="inherit_id" ref="om_account_asset.view_asset_depreciation_confirmation_wizard"/>
+        <field name="arch" type="xml">
+            
+            <field name="date" position="before">
+                <field name="company_ids" widget="many2many_tags" options="{'no_create':True}"/>
+            </field>
+
+         </field>
+    </record>
+
+</odoo>

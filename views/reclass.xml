@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_vit_reclass_tree" model="ir.ui.view">
+            <field name="name">vit.reclass.tree</field>
+            <field name="model">vit.reclass</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="Reclass">
+                    <field name="name" />
+                    <field name="date" />
+                    <field name="notes" />
+                    <field name="category_id" />
+                    <field name="new_category_id"/>
+                    <field name="user_id" options="{'no_create':True}"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_vit_reclass_form" model="ir.ui.view">
+            <field name="name">vit.reclass.form</field>
+            <field name="model">vit.reclass</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Reclass" version="7.0">
+                    <header>
+                        <button string="Confirm" icon="fa-check-circle" states="draft" type="object" name="action_open"/>
+                        <button string="Approve" icon="fa-check-circle" states="open" type="object" name="action_approve"/>
+                        <button string="Reject" icon="fa-times" states="open" type="object" name="action_cancel"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Name" />
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <group colspan="4">
+                            <field name="date"/>
+                            <field name="category_id" options="{'no_create':True}"/>
+                            <field name="new_category_id" options="{'no_create':True}"/>
+                            <field name="user_id" options="{'no_create':True}"/>
+                            <field name="department_id" readonly="1"/>
+                        </group>
+
+                        <notebook colspan="4">
+                            <page string="Notes">
+                                <field name="notes" />
+                            </page>
+                            <page string="Asset to Transfer">
+                                <field name="asset_ids" domain="[('asset_id','!=', False),('state','=','open'),('category_id','=',category_id)]">
+                                    <tree string="Assets">
+                                        <field name="code"/>
+                                        <field name="name"/>
+                                        <field name="brand"/>
+                                        <field name="model"/>
+                                        <field name="color"/>
+                                        <field name="category_id"/>
+                                        <field name="serial_number"/>
+                                        <field name="last_location_id"/>
+                                        <field name="condition"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_vit_reclass_search" model="ir.ui.view">
+            <field name="name">vit.reclass.search</field>
+            <field name="model">vit.reclass</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="Reclass">
+                    <field name="name" select="True"/>
+                    <field name="date" select="True"/>
+                    <field name="notes" select="True"/>
+                    <field name="category_id" select="True"/>
+                    <field name="new_category_id" select="True"/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="Category" icon="terp-camera_test" name="group_by_category_id" context="{'group_by':'category_id'}"/>
+                        <filter string="New Category" icon="terp-camera_test" name="group_by_new_category_id" context="{'group_by':'new_category_id'}"/>
+                        <filter string="State" icon="terp-camera_test" name="group_by_state" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_vit_reclass_view">
+            <field name="name">Reclass</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vit.reclass</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_vit_reclass_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_vit_reclass_view_form">
+            <field name="act_window_id" ref="act_open_vit_reclass_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_vit_reclass_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_vit_reclass_view_tree">
+            <field name="act_window_id" ref="act_open_vit_reclass_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_vit_reclass_tree"/>
+        </record>
+
+        <menuitem id="menu_vit_reclass"
+                  parent="submenu_operation"
+                  sequence="20"
+                  action="act_open_vit_reclass_view"/>
+    
+    </data>
+</openerp>

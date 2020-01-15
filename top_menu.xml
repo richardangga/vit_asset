@@ -1,0 +1,39 @@
+<openerp>
+	<data>
+
+		<menuitem id="topmenu_asset"
+				  name="Assets"
+				  sequence="20"
+				  web_icon="vit_asset,static/src/img/asset.png"
+		/>
+		<menuitem id="submenu_asset"
+				  name="Assets"
+				  parent="topmenu_asset"
+				  sequence="10"
+		/>
+
+		<menuitem id="submenu_operation"
+				  name="Operation"
+				  parent="topmenu_asset"
+				  sequence="20"
+		/>
+		<menuitem id="submenu_maintenance"
+				  name="Maintenance"
+				  parent="topmenu_asset"
+				  sequence="30"
+		/>
+
+		<menuitem id="submenu_report"
+				  name="Report"
+				  parent="topmenu_asset"
+				  sequence="40"
+		/>
+
+		<menuitem id="submenu_configuration"
+				  name="Configuration"
+				  parent="topmenu_asset"
+				  sequence="200"
+		/>
+
+	</data>
+</openerp>

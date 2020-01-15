@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <record model="ir.module.category" id="module_category_asset">
+            <field name="name">Asset Management</field>
+            <field name="description">Asset Management groups</field>
+            <field name="sequence">10</field>
+        </record>
+        
+        <record id="group_asset_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="module_category_asset"/>
+        </record>
+        
+        <record id="group_asset_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="category_id" ref="module_category_asset"/>
+        </record>
+        
+        <record id="group_confirm_asset_ga" model="res.groups">
+            <field name="name">General Affair (Asset)</field>
+            <field name="category_id" ref="module_category_asset"/>
+        </record>
+        
+        <record id="group_confirm_asset_accounting" model="res.groups">
+            <field name="name">Confirm/Approve Asset (Accounting)</field>
+            <field name="category_id" ref="module_category_asset"/>
+        </record>
+        
+    </data>
+</odoo>

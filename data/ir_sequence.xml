@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record id="seq_vit_disposal" model="ir.sequence">
+			<field name="name">Disposal</field>
+			<field name="code">vit.disposal</field>
+			<field name="prefix">DIS-%(year)s-%(month)s-</field>
+			<field name="padding">3</field>
+			<field name="number_next_actual">1</field>
+			<field name="number_increment">1</field>
+			<field name="implementation">standard</field>
+		</record>
+
+		<record id="seq_vit_transfer" model="ir.sequence">
+			<field name="name">Transfer</field>
+			<field name="code">vit.transfer</field>
+			<field name="prefix">TRF-%(year)s-%(month)s-</field>
+			<field name="padding">3</field>
+			<field name="number_next_actual">1</field>
+			<field name="number_increment">1</field>
+			<field name="implementation">standard</field>
+		</record>
+
+		<record id="seq_vit_maintenance" model="ir.sequence">
+			<field name="name">Maintenance</field>
+			<field name="code">vit.maintenance</field>
+			<field name="prefix">MT-%(year)s-%(month)s-</field>
+			<field name="padding">3</field>
+			<field name="number_next_actual">1</field>
+			<field name="number_increment">1</field>
+			<field name="implementation">standard</field>
+		</record>
+
+		<record id="seq_vit_reclass" model="ir.sequence">
+			<field name="name">Reclass</field>
+			<field name="code">vit.reclass</field>
+			<field name="prefix">RCL-%(year)s-%(month)s-</field>
+			<field name="padding">3</field>
+			<field name="number_next_actual">1</field>
+			<field name="number_increment">1</field>
+			<field name="implementation">standard</field>
+		</record>
+
+		<record id="seq_vit_reval" model="ir.sequence">
+			<field name="name">Revaluation</field>
+			<field name="code">vit.reval</field>
+			<field name="prefix">RVL-%(year)s-%(month)s-</field>
+			<field name="padding">3</field>
+			<field name="number_next_actual">1</field>
+			<field name="number_increment">1</field>
+			<field name="implementation">standard</field>
+		</record>
+
+		<record id="seq_vit_physical" model="ir.sequence">
+			<field name="name">Physical Check</field>
+			<field name="code">vit.physical</field>
+			<field name="prefix">PHY-%(year)s-%(month)s-</field>
+			<field name="padding">3</field>
+			<field name="number_next_actual">1</field>
+			<field name="number_increment">1</field>
+			<field name="implementation">standard</field>
+		</record>
+
+	</data>
+</openerp>

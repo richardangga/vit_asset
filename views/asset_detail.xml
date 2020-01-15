@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="account_asset_asset_kanban_view" model="ir.ui.view">
+            <field name="name">account.asset.asset.kanban</field>
+            <field name="model">account.asset.asset</field>
+            <field name="type">kanban</field>
+            <field name="priority" eval="9"/>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="image"/>
+                    <field name="value"/>
+                    <field name="value_residual"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_image">
+                                    <img t-att-src="kanban_image('om.account.asset.asset', 'image', record.id.value)"/>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <strong>
+                                        <field name="name"/><span> </span><field name="code"/>
+                                    </strong>
+                                    <div name="tags"/>
+                                    Gross value : <field name="value" groups="account.group_account_user"/>
+                                    <div name="tags"/>
+                                    Residual value : <field name="value_residual" groups="account.group_account_user"/>
+                                    <div name="tags"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="view_account_asset_asset_detail_tree" model="ir.ui.view">
+            <field name="name">account.asset.asset.tree.detail</field>
+            <field name="model">account.asset.asset</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="Asset Detail" decoration-info="(state == 'draft')" decoration-muted="(state == 'close')">
+                    <field name="asset_id"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="category_id"/>
+                    <field name="date"/>
+                    <field name="partner_id" string="Vendor"/>
+                    <field name="value" groups="account.group_account_user"/>
+                    <field name="value_residual" widget="monetary" groups="account.group_account_user"/>
+                    <field name="currency_id" groups="base.group_multi_currency"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="condition"/>
+                    <field name="status_kepemilikan"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_account_asset_asset_detail_form" model="ir.ui.view">
+            <field name="name">account.asset.asset.detail</field>
+            <field name="model">account.asset.asset</field>
+            <field name="inherit_id" ref="om_account_asset.view_account_asset_asset_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <field name="date" position="after">
+                    <field name="asset_id" readonly="1"/>
+                    <field name="status_kepemilikan"/>
+                </field>
+                <field name="partner_id" position="after">
+                    <field name="existence" readonly="0"/>
+                    <field name="condition"/>
+                    <field name="account_analytic_id" options="{'no_create':True}" domain="[('company_id','=',company_id)]"/>
+                    <!-- <field name="analytic_tag_ids" options="{'no_create':True}" widget="many2many_tags"/> -->
+                    <field name="start_date" attrs="{'invisible': [('status_kepemilikan','!=','Sewa')]}"/>
+                    <field name="end_date" attrs="{'invisible': [('status_kepemilikan','!=','Sewa')]}"/>
+                    <field name="nilai_sewa" attrs="{'invisible': [('status_kepemilikan','!=','Sewa')]}"/>
+                    <field name="due_date" attrs="{'invisible': [('status_kepemilikan','!=','Sewa')],'required': [('status_kepemilikan','=','Sewa')]}"/>
+                    <field name="lama_sewa" attrs="{'invisible': [('status_kepemilikan','!=','Sewa')]}"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_asset_asset_detail_form2" model="ir.ui.view">
+            <field name="name">account.asset.asset.detail2</field>
+            <field name="model">account.asset.asset</field>
+            <field name="inherit_id" ref="vit_asset.view_account_asset_asset_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <field name="qty" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|',('state','!=','draft'),('asset_id','!=',False)]}</attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_asset_asset_detail_search" model="ir.ui.view">
+            <field name="name">account.asset.asset.detail.search</field>
+            <field name="model">account.asset.asset</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="Asset">
+                    <field name="name" select="True"/>
+                    <field name="existence" select="True"/>
+                    <field name="status_kepemilikan"/>
+                    <filter string="Disposed" icon="terp-camera_test" name="asset_disposed" domain="[('existence','in',['sold','writeoff'])]"/>
+                    <filter string="Not Disposed" icon="terp-camera_test" name="asset_not_disposed" domain="[('existence','not in',['sold','writeoff'])]"/>
+                    <filter string="Running" icon="terp-camera_test" name="asset_running" domain="[('state','=','open')]"/>
+                    <filter string="Beli" name="asset_beli" domain="[('status_kepemilikan','=','Beli')]"/>
+                    <filter string="Sewa" name="asset_sewa" domain="[('status_kepemilikan','=','Sewa')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Category" icon="terp-camera_test" name="group_by_category_id" context="{'group_by':'category_id'}"/>
+                        <filter string="Status Kepemilikan" name="group_kepemilikan" context="{'group_by':'status_kepemilikan'}"/>
+                        <filter string="Parent Asset" icon="terp-camera_test" name="group_by_asset_id" context="{'group_by':'asset_id'}"/>
+                        <filter string="Condition" icon="terp-camera_test" name="group_by_condition" context="{'group_by':'condition'}"/>
+                        <filter string="State" icon="terp-camera_test" name="group_by_state" context="{'group_by':'state'}"/>
+                        <filter string="Start Date" name="group_start_date" context="{'group_by':'start_date'}"/>
+                        <filter string="End Date" name="group_end_date" context="{'group_by':'end_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_account_asset_asset_detail_view">
+            <field name="name">Asset Detail</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.asset.asset</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="view_account_asset_asset_detail_search"/>
+            <field name="domain">[('asset_id','!=',False)]</field>
+            <field name="context">{'search_default_asset_not_disposed':True}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_account_asset_asset_view_form">
+            <field name="act_window_id" ref="act_open_account_asset_asset_detail_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_account_asset_asset_detail_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_account_asset_asset_view_tree">
+            <field name="act_window_id" ref="act_open_account_asset_asset_detail_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_account_asset_asset_detail_tree"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_account_asset_asset_view_kanban">
+            <field name="act_window_id" ref="act_open_account_asset_asset_detail_view"/>
+            <field name="sequence" eval="15"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="account_asset_asset_kanban_view"/>
+        </record>
+
+        <menuitem id="menu_account_asset_asset_detail"
+                  parent="submenu_asset"
+                  sequence="30"
+                  action="act_open_account_asset_asset_detail_view"/>
+
+
+    </data>
+</openerp>

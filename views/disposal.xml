@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_vit_disposal_tree" model="ir.ui.view">
+            <field name="name">vit.disposal.tree</field>
+            <field name="model">vit.disposal</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="Disposal">
+                    <field name="name"/>
+                        <field name="date" />
+                        <field name="disposal_type" />
+                        <field name="disposal_journal_id" />
+                        <field name="disposal_move_id" />
+                        <field name="disposal_customer_id" />
+                        <field name="disposal_invoice_id" />
+                        <field name="user_id" options="{'no_create':True}"/>
+                        <field name="state" />
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_vit_disposal_form" model="ir.ui.view">
+            <field name="name">vit.disposal.form</field>
+            <field name="model">vit.disposal</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Disposal" version="7.0">
+                    <header>
+                        <button string="Confirm GA" icon="fa-check-circle" states="draft" type="object" name="action_open" groups="vit_asset.group_confirm_asset_ga"/>
+                        <button string="Approve Accounting" icon="fa-check-circle" states="open" type="object" name="action_approve" groups="vit_asset.group_confirm_asset_accounting"/>
+                        <button string="Reject" icon="fa-times" states="open" type="object" name="action_cancel" groups="vit_asset.group_confirm_asset_accounting"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+
+                    <sheet>
+
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Name" />
+                            <h1><field name="name" /></h1>
+                        </div>
+                        <group colspan="4">
+                            <group>
+                                <field name="date" />
+                                <field name="disposal_type" />
+                                <field name="payment_account_id" options="{'no_create':True}" attrs="{'readonly': [('state','!=','draft')], 'invisible': [('disposal_type','!=','sale')], 'required': [('disposal_type','=','sale')]}" domain="[('internal_type','=','liquidity')]"/>
+                                <field name="user_id" options="{'no_create':True}"/>
+                                <field name="department_id" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="disposal_journal_id" required="1" options="{'no_create':True}"/>
+                                <field name="disposal_customer_id" attrs="{'invisible':[('disposal_type','=','writeoff')], 'required':[('disposal_type','=','sale')]}" domain="[('customer','=',True)]" options="{'no_create':True}"/>
+                                <field name="disposal_move_id" />
+                                <field name="disposal_invoice_id" attrs="{'invisible':[('disposal_type','=','writeoff')]}"/>
+                            </group>
+                        </group>
+
+                        <notebook colspan="4">
+
+                            <page string="Notes">
+                                <group colspan="4">
+                                    <field name="notes"/>
+                                </group>
+                            </page>
+                            <page string="Assets to Dispose">
+                                <field name="disposal_line">
+                                    <tree string="Assets" editable="bottom">
+                                        <field name="asset_id" domain="[('asset_id','!=', False),('state','=','open'),('existence','not in',['sold','writeoff'])]" options="{'no_create':True}"/>
+                                        <field name="value_residual" sum="Total Residual" readonly="1"/>
+                                        <field name="amount" sum="Total" required="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="view_vit_disposal_search" model="ir.ui.view">
+            <field name="name">vit.disposal.search</field>
+            <field name="model">vit.disposal</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="Disposal">
+                    <field name="name" select="True"/>
+                    <field name="date" select="True"/>
+                    <field name="user_id" select="True"/>
+                    <field name="department_id" select="True"/>
+                    <field name="disposal_type" select="True"/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="Disposal Type" icon="terp-camera_test" name="group_by_disposal_type" context="{'group_by':'disposal_type'}"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_vit_disposal_view">
+            <field name="name">Disposal</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vit.disposal</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_vit_disposal_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_vit_disposal_view_form">
+            <field name="act_window_id" ref="act_open_vit_disposal_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_vit_disposal_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_vit_disposal_view_tree">
+            <field name="act_window_id" ref="act_open_vit_disposal_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_vit_disposal_tree"/>
+        </record>
+
+        <menuitem id="menu_vit_disposal"
+                  parent="submenu_operation"
+                  sequence="20"
+                  action="act_open_vit_disposal_view"/>
+    
+    </data>
+</openerp>

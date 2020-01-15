@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+vit_disposal_all,vit_disposal_all,model_vit_disposal,,1,1,1,1
+vit_disposal_line_all,vit_disposal_line_all,model_vit_disposal_line,,1,1,1,1
+vit_location_all,vit_location_all,model_vit_location,,1,1,1,1
+vit_maintenance_all,vit_maintenance_all,model_vit_maintenance,,1,1,1,1
+vit_physical_all,vit_physical_all,model_vit_physical,,1,1,1,1
+vit_reclass_all,vit_reclass_all,model_vit_reclass,,1,1,1,1
+vit_reval_all,vit_reval_all,model_vit_reval,,1,1,1,1
+vit_transfer_all,vit_transfer_all,model_vit_transfer,,1,1,1,1
+vit_transfer_line_all,vit_transfer_line_all,model_vit_transfer_line,,1,1,1,1
+asset_asset_report_all,asset_asset_report_all,om_account_asset.model_asset_asset_report,,1,1,1,1
+account_asset_asset_all,account_asset_asset_all,model_account_asset_asset,,1,1,1,1
+account_asset_category_all,account_asset_category_all,model_account_asset_category,,1,1,1,1
+vit_asset_sewa_all,vit_asset_sewa_all,model_vit_asset_sewa,,1,1,1,1
+vit_physical_line,vit_physical_line,model_vit_physical_line,,1,1,1,1

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_vit_reval_tree" model="ir.ui.view">
+            <field name="name">vit.reval.tree</field>
+            <field name="model">vit.reval</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="Revaluation">
+                    <field name="name" />
+                    <field name="date" />
+                    <field name="notes" />
+                    <field name="asset_id" />
+                    <field name="book_value" />
+                    <field name="new_book_value"/>
+                    <field name="user_id" options="{'no_create':True}"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_vit_reval_form" model="ir.ui.view">
+            <field name="name">vit.reval.form</field>
+            <field name="model">vit.reval</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Revaluation" version="7.0">
+                    <header>
+                        <button string="Confirm" icon="fa-check-circle" states="draft" type="object" name="action_open"/>
+                        <button string="Approve" icon="fa-check-circle" states="open" type="object" name="action_approve"/>
+                        <button string="Reject" icon="fa-times" states="open" type="object" name="action_cancel"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Name" />
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="asset_id" options="{'no_create':True}" domain="[('asset_id','!=',False),('state','=','open')]"/>
+                            <field name="date"/>
+                            <field name="company_id" options="{'no_create':True}"/>
+                            <field name="account_id" options="{'no_create':True}" domain="[('company_id','=',company_id)]"/>
+                            <field name="journal_id" options="{'no_create':True}" domain="[('company_id','=',company_id)]"/>
+                            <field name="book_value"/>
+                            <field name="new_book_value"/>
+                            <field name="user_id" options="{'no_create':True}"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="move_id" readonly="1"/>
+                        </group>
+
+                        <notebook colspan="4">
+                            <page string="Notes">
+                                <field name="notes" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_vit_reval_search" model="ir.ui.view">
+            <field name="name">vit.reval.search</field>
+            <field name="model">vit.reval</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="Revaluation">
+                    <field name="name" select="True"/>
+                    <field name="date" select="True"/>
+                    <field name="notes" select="True"/>
+                    <field name="asset_id" select="True"/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="Asset" icon="terp-camera_test" name="group_by_asset_id" context="{'group_by':'asset_id'}"/>
+                        <filter string="State" icon="terp-camera_test" name="group_by_state" context="{'group_by':'state'}"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_vit_reval_view">
+            <field name="name">Revaluation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vit.reval</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_vit_reval_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_vit_reval_view_form">
+            <field name="act_window_id" ref="act_open_vit_reval_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_vit_reval_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_vit_reval_view_tree">
+            <field name="act_window_id" ref="act_open_vit_reval_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_vit_reval_tree"/>
+        </record>
+
+        <menuitem id="menu_vit_reval"
+                parent="submenu_operation"
+                sequence="20"
+                action="act_open_vit_reval_view"
+                groups="account.group_account_user"/>
+    </data>
+</openerp>
